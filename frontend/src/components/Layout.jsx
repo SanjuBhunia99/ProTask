@@ -20,9 +20,12 @@ const Layout = ({ onLogout, user }) => {
       const token = localStorage.getItem("token");
       // if (!token) throw new Error("No auth token found");
 if(!token){navigate('/signup')}
-      const { data } = await axios.get("http://localhost:8085/api/tasks/gp", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const { data } = await axios.get(
+        "https://protask-0xfu.onrender.com/api/tasks/gp",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
 
       const arr = Array.isArray(data)
         ? data

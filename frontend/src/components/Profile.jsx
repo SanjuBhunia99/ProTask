@@ -5,7 +5,7 @@ import{ChevronLeft, UserCircle, Save, Lock, Shield, LogOut} from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
-const API_URL = 'http://localhost:8085'
+const API_URL = "https://protask-0xfu.onrender.com"
 
 const Profile = (setCurrentUser, onLogout) => {
   const [profile, setProfile] = useState({ name: "", email: "" });

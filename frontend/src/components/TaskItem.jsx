@@ -5,7 +5,7 @@ import axios from "axios";
 import { format, isToday } from "date-fns";
 import TaskModal from "./TaskModal.jsx";
 
-const API_BASE = "http://localhost:8085/api/tasks";
+const API_BASE = "https://protask-0xfu.onrender.com/api/tasks";
 
 
 const TaskItem = ({
