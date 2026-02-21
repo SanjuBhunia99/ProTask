@@ -13,8 +13,8 @@ const Login = ({ onSubmit, onSwitchMode }) => {
   const [formData, setFormData] = useState(INITIAL_FORM);
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
-  
-  const url = "http://localhost:8085";
+
+  const  API_BASE = "http://localhost:8085";
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -23,7 +23,7 @@ const Login = ({ onSubmit, onSwitchMode }) => {
     if (token) {
       (async () => {
         try {
-          const { data } = await axios.get(`${url}/api/user/me`, {
+          const { data } = await axios.get(`${API_BASE}/api/user/me`, {
             headers: { Authorization: `Bearer ${token}` },
           });
 
@@ -52,7 +52,7 @@ const Login = ({ onSubmit, onSwitchMode }) => {
     setLoading(true);
 
     try {
-      const { data } = await axios.post(`${url}/api/user/login`, formData);
+      const { data } = await axios.post(`${API_BASE}/api/user/login`, formData);
 
       if (!data.token) throw new Error(data.message || "Login failed");
 
@@ -188,3 +188,4 @@ const Login = ({ onSubmit, onSwitchMode }) => {
 };
 
 export default Login;
+
