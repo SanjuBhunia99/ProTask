@@ -7,12 +7,13 @@ import axios from "axios";
 
 const INITIAL_FORM = { email: "", password: "" };
 
-const Login = ({ onSubmit, onSwitchModel }) => {
+const Login = ({ onSubmit, onSwitchMode }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState(INITIAL_FORM);
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
+  
   const url = "http://localhost:8085";
 
   useEffect(() => {
@@ -78,7 +79,7 @@ const Login = ({ onSubmit, onSwitchModel }) => {
 
   const handleSwitchModel = () => {
     toast.dismiss();
-    onSwitchModel?.();
+    onSwitchMode?.();
   };
 
   const FIELDS = [

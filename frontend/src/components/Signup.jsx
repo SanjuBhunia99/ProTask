@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState ,useEffect} from "react";
 import { UserPlus, User, Mail, Lock } from "lucide-react";
 import axios from "axios";
 import {
@@ -8,7 +8,10 @@ import {
   MESSAGE_SUCCESS,
 } from "../assets/dummy.jsx";
 
-const API_URL = "http://localhost:8085";
+import { toast} from "react-toastify";
+import { useNavigate } from "react-router-dom";
+
+const API_BASE = "http://localhost:8085";
 
 
 
@@ -34,10 +37,37 @@ const FIELDS = [
   },
 ];
 
-const Signup = ({ onSwitchMode }) => {
+const Signup = ({onSubmit, onSwitchMode }) => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState(INITIAL_FORM);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ text: "", type: "" });
+
+
+ useEffect(() => {
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
+
+    if (token) {
+      (async () => {
+        try {
+          const { data } = await axios.get(`${API_BASE}/api/user/me`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (data.success) {
+            onSubmit?.({ token, userId, ...data.user });
+            toast.success("Session restored.");
+            navigate("/");
+          } else {
+            localStorage.clear();
+          }
+        } catch {
+          localStorage.clear();
+        }
+      })();
+    }
+  }, [navigate, onSubmit]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,7 +76,7 @@ const Signup = ({ onSwitchMode }) => {
 
     try {
       const { data } = await axios.post(
-        `${API_URL}/api/user/register`,
+        `${API_BASE}/api/user/register`,
         formData,
       );
 
@@ -57,7 +87,16 @@ const Signup = ({ onSwitchMode }) => {
         type: "success",
       });
 
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("userId", data.user.id)
+
+      onSubmit?.({
+        token: data.token,
+        userId: data.user.id,
+        ...data.user,
+      });
       setFormData(INITIAL_FORM);
+       setTimeout(() => navigate("/"), 1000);
     } catch (err) {
       console.error("Signup error:", err);
       setMessage({
@@ -111,7 +150,7 @@ const Signup = ({ onSwitchMode }) => {
           </div>
         ))}
 
-        <button type="submit" className={BUTTONCLASSES} disabled={loading}>
+        <button type="submit" className={BUTTONCLASSES} disabled={loading} >
           {loading ? (
             "Signing Up..."
           ) : (

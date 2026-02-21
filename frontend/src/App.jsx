@@ -50,6 +50,17 @@ const App = () => {
   return (
     <Routes>
       <Route
+        path="/signup"
+        element={
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <Signup
+              onSubmit={handleAuthSubmit}
+              onSwitchMode={() => navigate("/login")}
+            />
+          </div>
+        }
+      />
+      <Route
         path="/login"
         element={
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
@@ -62,27 +73,23 @@ const App = () => {
       />
 
       <Route
-        path="/signup"
         element={
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <Signup
-              onSubmit={handleAuthSubmit}
-              onSwitchMode={() => navigate("/login")}
-            />
-          </div>
-        }
-      />
-
-      <Route
-        element={
-          currentUser ? <ProtectedLayout /> : <Navigate to="/login" replace />
+          currentUser ? <ProtectedLayout /> : <Navigate to="/signup" replace />
         }
       >
-      <Route path="/" element={<Dashboard/>} />
-      <Route path="/pending" element={<PendingPage />} />
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/pending" element={<PendingPage />} />
         <Route path="/complete" element={<CompletePage />} />
-        <Route path="/profile" element={<Profile user={currentUser} setCurrentUser={setCurrentUser} onLogout={handleLogout} />}/>
-
+        <Route
+          path="/profile"
+          element={
+            <Profile
+              user={currentUser}
+              setCurrentUser={setCurrentUser}
+              onLogout={handleLogout}
+            />
+          }
+        />
       </Route>
 
       <Route
