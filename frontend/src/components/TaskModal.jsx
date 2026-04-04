@@ -26,7 +26,7 @@ const TaskModal = ({ isOpen, onClose, taskToEdit, onSave, onLogout }) => {
         description: taskToEdit.description || "",
         priority: taskToEdit.priority || "Low",
         dueDate: taskToEdit.dueDate || "",
-        // dueDate: taskToEdit.dueDate ? taskToEdit.dueDate.split("T")[0]:"",
+        
         completed: normalized,
         id: taskToEdit.id || null,
       });
