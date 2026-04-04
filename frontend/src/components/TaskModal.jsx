@@ -3,7 +3,7 @@ import {baseControlClasses, DEFAULT_TASK, priorityStyles,} from "../assets/dummy
 import {Calendar,X,CheckCircle,Flag,PlusCircle,AlignLeft,Save,} from "lucide-react";
 
 
-const API_BASE = "http://localhost:8085/api/tasks";
+const API_BASE = "https://protask-0xfu.onrender.com/api/tasks";
 
 
 const TaskModal = ({ isOpen, onClose, taskToEdit, onSave, onLogout }) => {

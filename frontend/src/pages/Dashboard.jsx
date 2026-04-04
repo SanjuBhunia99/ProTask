@@ -6,7 +6,7 @@ import axios from "axios";
 import TaskItem from "../components/TaskItem.jsx";
 import TaskModal from "../components/TaskModal.jsx";
 
-const API_BASE = "http://localhost:8085/";
+const API_BASE = "https://protask-0xfu.onrender.com";
 
 const Dashboard = () => {
   const [showModal, setShowModal] = useState(false);

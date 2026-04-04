@@ -5,7 +5,7 @@ import { useOutletContext } from "react-router-dom";
 import TaskItem from "../components/TaskItem.jsx";
 import TaskModal from "../components/TaskModal.jsx";
 
-const API_BASE = "http://localhost:8085/api/tasks";
+const API_BASE = "https://protask-0xfu.onrender.com/api/tasks";
 
 const PendingPage = () => {
 
