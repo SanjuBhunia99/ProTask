@@ -205,15 +205,15 @@ const [formData, setFormData] = useState(INITIAL_FORM);
 const [rememberMe, setRememberMe] = useState(false);
 const navigate = useNavigate();
 
-// ✅ Use ENV variable (IMPORTANT for deployment)
+
 const API_BASE = import.meta.env.VITE_API_URL || "https://protask-0xfu.onrender.com";
 
-// ✅ Restore session
+
 useEffect(() => {
 const token = localStorage.getItem("token");
 const userId = localStorage.getItem("userId");
 
-```
+
 if (!token) return;
 
 const fetchUser = async () => {
@@ -236,16 +236,15 @@ const fetchUser = async () => {
 };
 
 fetchUser();
-```
+
 
 }, [navigate, onSubmit, API_BASE]);
 
-// ✅ Handle login
+
 const handleSubmit = async (e) => {
 e.preventDefault();
 
-```
-// 🔥 Proper validation
+
 if (!formData.email || !formData.password) {
   toast.error("Please fill all fields");
   return;
@@ -260,11 +259,11 @@ try {
     throw new Error(data.message || "Login failed");
   }
 
-  // ✅ Save session
+
   localStorage.setItem("token", data.token);
   localStorage.setItem("userId", data.user.id);
 
-  // Optional: only if rememberMe checked
+  
   if (!rememberMe) {
     sessionStorage.setItem("token", data.token);
   }
@@ -290,7 +289,7 @@ try {
 } finally {
   setLoading(false);
 }
-```
+
 
 };
 
@@ -317,7 +316,6 @@ isPassword: true,
 
 return ( <div className="max-w-md bg-white w-full shadow-lg border border-blue-100 rounded-xl p-8"> <ToastContainer position="top-center" autoClose={3000} hideProgressBar />
 
-```
   <div className="mb-6 text-center">
     <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full mx-auto flex items-center justify-center mb-4">
       <LogIn className="w-8 h-8 text-white" />
@@ -361,7 +359,6 @@ return ( <div className="max-w-md bg-white w-full shadow-lg border border-blue-1
       </div>
     ))}
 
-    {/* ✅ Optional Remember Me */}
     <div className="flex items-center">
       <input
         type="checkbox"
@@ -398,7 +395,7 @@ return ( <div className="max-w-md bg-white w-full shadow-lg border border-blue-1
     </button>
   </p>
 </div>
-```
+
 
 );
 };
