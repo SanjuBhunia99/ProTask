@@ -37,35 +37,20 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 8000;
 
-connectDB();
 
-app.use(
-cors({
-origin: [
-"http://localhost:5173", 
-"https://your-vercel-app.vercel.app",
-],
-methods: ["GET", "POST", "PUT", "DELETE"],
-credentials: true,
-})
-);
-
-
-app.options("*", cors());
-
-
+app.use(cors());
 app.use(express.json());
-
 
 app.use("/api/user", userRouter);
 app.use("/api/tasks", taskRouter);
 
-
 app.get("/", (req, res) => {
-res.send("API working");
+  res.send("API working");
 });
 
 
-app.listen(PORT, () => {
-console.log(`Server running on port ${PORT}`);
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
 });

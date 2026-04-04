@@ -256,7 +256,6 @@ import axios from "axios";
 import TaskItem from "../components/TaskItem.jsx";
 import TaskModal from "../components/TaskModal.jsx";
 
-/* ✅ FIXED API BASE */
 const API_BASE = "https://protask-0xfu.onrender.com/api/tasks";
 
 const Dashboard = () => {
@@ -264,31 +263,21 @@ const Dashboard = () => {
   const [selectedTask, setSelectedTask] = useState(null);
   const [filter, setFilter] = useState("all");
 
-  const { tasks, refreshTasks } = useOutletContext();
+  const { tasks = [], refreshTasks } = useOutletContext();
 
-  /* ================= STATS ================= */
+  // ✅ STATS
   const stats = useMemo(
     () => ({
       total: tasks.length,
-      lowPriority: tasks.filter((t) => t.priority?.toLowerCase() === "low")
-        .length,
-      mediumPriority: tasks.filter(
-        (t) => t.priority?.toLowerCase() === "medium",
-      ).length,
-      highPriority: tasks.filter((t) => t.priority?.toLowerCase() === "high")
-        .length,
-      completed: tasks.filter(
-        (t) =>
-          t.completed === true ||
-          t.completed === 1 ||
-          (typeof t.completed === "string" &&
-            t.completed.toLowerCase() === "yes"),
-      ).length,
+      lowPriority: tasks.filter((t) => t.priority === "Low").length,
+      mediumPriority: tasks.filter((t) => t.priority === "Medium").length,
+      highPriority: tasks.filter((t) => t.priority === "High").length,
+      completed: tasks.filter((t) => t.completed === true).length,
     }),
     [tasks],
   );
 
-  /* ================= FILTER ================= */
+  // ✅ FILTER
   const filteredTasks = useMemo(() => {
     return tasks.filter((task) => {
       const dueDate = new Date(task.dueDate);
@@ -311,45 +300,43 @@ const Dashboard = () => {
     });
   }, [tasks, filter]);
 
-  /* ================= SAVE TASK ================= */
+  // ✅ FIXED SAVE
   const handleTaskSave = useCallback(
     async (taskData) => {
       try {
-        if (taskData.id || taskData._id) {
-          const id = taskData.id || taskData._id;
+        const token = localStorage.getItem("token");
 
-          // ✅ UPDATE
-          await axios.put(`${API_BASE}/${id}`, taskData);
-        } else {
-          // ✅ CREATE
-          await axios.post(API_BASE, taskData);
+        if (taskData.id) {
+          
+          await axios.put(`${API_BASE}/${taskData.id}/gp`, taskData, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
         }
 
-        await refreshTasks();
+        refreshTasks();
         setShowModal(false);
         setSelectedTask(null);
       } catch (error) {
-        console.error("❌ Error saving task:", error);
+        console.log("Error saving task:", error);
       }
     },
     [refreshTasks],
   );
 
-  /* ================= UI ================= */
   return (
     <div className={WRAPPER}>
       {/* HEADER */}
       <div className={HEADER}>
         <div>
-          <h2 className="text-xl md:text-3xl font-bold flex items-center gap-2">
-            <HomeIcon className="text-blue-500 w-6 h-6" />
+          <h2 className="text-2xl font-bold flex items-center gap-2">
+            <HomeIcon className="text-blue-500" />
             Task Overview
           </h2>
-          <p className="text-gray-500">Manage your tasks efficiently</p>
+          <p className="text-gray-500 text-sm">Manage your tasks</p>
         </div>
 
         <button onClick={() => setShowModal(true)} className={ADD_BUTTON}>
-          <Plus size={16} /> Add New Task
+          <Plus size={16} /> Add Task
         </button>
       </div>
 
@@ -358,7 +345,7 @@ const Dashboard = () => {
         {STATS.map(({ key, label, icon: Icon, valueKey }) => (
           <div key={key} className={STAT_CARD}>
             <div className={ICON_WRAPPER}>
-              <Icon />
+              <Icon className="w-5 h-5" />
             </div>
             <div>
               <p className={VALUE_CLASS}>{stats[valueKey]}</p>
@@ -370,7 +357,8 @@ const Dashboard = () => {
 
       {/* FILTER */}
       <div className={FILTER_WRAPPER}>
-        <Filter />
+        <Filter className="text-blue-500" />
+
         <select
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
@@ -378,51 +366,50 @@ const Dashboard = () => {
         >
           {FILTER_OPTIONS.map((opt) => (
             <option key={opt} value={opt}>
-              {opt.charAt(0).toUpperCase() + opt.slice(1)}
+              {opt}
             </option>
           ))}
         </select>
+
+        <div className={TABS_WRAPPER}>
+          {FILTER_OPTIONS.map((opt) => (
+            <button
+              key={opt}
+              onClick={() => setFilter(opt)}
+              className={`${TAB_BASE} ${
+                filter === opt ? TAB_ACTIVE : TAB_INACTIVE
+              }`}
+            >
+              {opt}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* TASK LIST */}
       <div className="space-y-4">
         {filteredTasks.length === 0 ? (
           <div className={EMPTY_STATE.wrapper}>
-            <div className={EMPTY_STATE.iconWrapper}>
-              <CalendarIcon className="w-8 h-8 text-blue-500" />
-            </div>
-
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">
-              No tasks found
-            </h3>
-
-            <p className="text-gray-500 mb-4">
-              {filter === "all"
-                ? "Create your first task"
-                : "No tasks match filter"}
-            </p>
-
-            <button
-              onClick={() => setShowModal(true)}
-              className={EMPTY_STATE.btn}
-            >
-              Add New Task
-            </button>
+            <CalendarIcon className="w-8 h-8 text-blue-500" />
+            <p>No tasks found</p>
           </div>
         ) : (
           filteredTasks.map((task) => (
             <TaskItem
-              key={task._id || task.id}
+              key={task._id} // ✅ FIXED
               task={task}
               onRefresh={refreshTasks}
-              showCompleteCheckbox
-              onEdit={() => {
-                setSelectedTask(task);
-                setShowModal(true);
-              }}
             />
           ))
         )}
+      </div>
+
+      {/* ADD BOX */}
+      <div
+        onClick={() => setShowModal(true)}
+        className="p-4 border-dashed border rounded cursor-pointer"
+      >
+        <Plus /> Add New Task
       </div>
 
       {/* MODAL */}

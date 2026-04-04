@@ -208,16 +208,17 @@ const PendingPage = () => {
 
   const getHeaders = () => {
     const token = localStorage.getItem("token");
-    if (!token) throw new Error("NO auth token found");
     return {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     };
   };
 
+  // ✅ DELETE FIXED
   const handleDelete = async (id) => {
     try {
-      await fetch(`${API_BASE}/${id}`, {
+      await fetch(`${API_BASE}/${id}/gp`, {
+        // ✅ FIXED
         method: "DELETE",
         headers: getHeaders(),
       });
@@ -227,12 +228,16 @@ const PendingPage = () => {
     }
   };
 
+  // ✅ TOGGLE FIXED
   const handleToggleComplete = async (id, currentStatus) => {
     try {
-      await fetch(`${API_BASE}/${id}`, {
-        method: "PATCH",
+      await fetch(`${API_BASE}/${id}/gp`, {
+        // ✅ FIXED
+        method: "PUT",
         headers: getHeaders(),
-        body: JSON.stringify({ completed: !currentStatus }),
+        body: JSON.stringify({
+          completed: !currentStatus,
+        }),
       });
       refreshTasks();
     } catch (err) {
@@ -241,21 +246,15 @@ const PendingPage = () => {
   };
 
   const sortedPendingTasks = useMemo(() => {
-    const filtered = tasks.filter(
-      (t) =>
-        !t.completed ||
-        (typeof t.completed === "string" && t.completed.toLowerCase() === "no"),
-    );
+    const filtered = tasks.filter((t) => !t.completed);
 
     return filtered.sort((a, b) => {
       if (sortBy === "newest") {
         return new Date(b.createdAt) - new Date(a.createdAt);
       }
-
       if (sortBy === "oldest") {
         return new Date(a.createdAt) - new Date(b.createdAt);
       }
-
       if (sortBy === "priority") {
         const order = { high: 3, medium: 2, low: 1 };
         return (
@@ -263,7 +262,6 @@ const PendingPage = () => {
           (order[a.priority?.toLowerCase()] || 0)
         );
       }
-
       return 0;
     });
   }, [tasks, sortBy]);
@@ -272,22 +270,22 @@ const PendingPage = () => {
     <div className={layoutClasses.container}>
       <div className={layoutClasses.headerWrapper}>
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-2">
+          <h1 className="text-2xl md:text-3xl font-bold flex items-center gap-2">
             <ListChecks className="text-blue-500" />
             Pending Task
           </h1>
+
           <p className="text-sm text-gray-500 mt-1 ml-7">
-            {sortedPendingTasks.length} task
-            {sortedPendingTasks.length !== 1 ? "s" : " "}
-            needing your attention
+            {sortedPendingTasks.length} tasks
           </p>
         </div>
 
         <div className={layoutClasses.sortBox}>
-          <div className="flex items-center gap-2 text-gray-700 font-medium">
+          <div className="flex items-center gap-2">
             <Filter className="w-4 h-4 text-blue-500" />
-            <span className="text-sm">Sort By:</span>
+            Sort By
           </div>
+
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
@@ -313,6 +311,7 @@ const PendingPage = () => {
         </div>
       </div>
 
+      {/* ADD TASK */}
       <div
         className={layoutClasses.addBox}
         onClick={() => {
@@ -320,34 +319,16 @@ const PendingPage = () => {
           setShowModal(true);
         }}
       >
-        <div className="flex items-center justify-center gap-2 text-gray-500 group-hover:text-blue-600 transition-colors">
-          <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm group-hover:shadow-md transition-all duration-200">
-            <Plus className="text-blue-500" size={18} />
-          </div>
-          <span className="font-medium">Add New Task</span>
-        </div>
+        <Plus className="text-blue-500" />
+        Add New Task
       </div>
 
+      {/* TASK LIST */}
       <div className="space-y-4">
         {sortedPendingTasks.length === 0 ? (
           <div className={layoutClasses.emptyState}>
-            <div className="max-w-xs mx-auto py-6">
-              <div className={layoutClasses.emptyIconBg}>
-                <Clock className="w-8 h-8 text-blue-500" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                All caught up!
-              </h3>
-              <p className="text-sm text-gray-500 mb-4">
-                No pending tasks - great work!
-              </p>
-              <button
-                onClick={() => setShowModal(true)}
-                className={layoutClasses.emptyBtn}
-              >
-                Create New Task
-              </button>
-            </div>
+            <Clock className="w-8 h-8 text-blue-500" />
+            <p>No pending tasks</p>
           </div>
         ) : (
           sortedPendingTasks.map((task) => (
@@ -369,16 +350,18 @@ const PendingPage = () => {
         )}
       </div>
 
+      {/* MODAL */}
       <TaskModal
-        isOpen={!!selectedTask || showModal}
+        isOpen={showModal || !!selectedTask}
         onClose={() => {
           setShowModal(false);
           setSelectedTask(null);
-          refreshTasks();
         }}
         taskToEdit={selectedTask}
+        onSave={refreshTasks}
       />
     </div>
   );
 };
+
 export default PendingPage;
