@@ -127,6 +127,102 @@
 
 
 
+// import React, { useState, useMemo } from "react";
+// import { CT_CLASSES, SORT_OPTIONS } from "../assets/dummy.jsx";
+// import { CheckCircle2, Filter } from "lucide-react";
+// import { useOutletContext } from "react-router-dom";
+// import TaskItem from "../components/TaskItem.jsx";
+
+// const CompletePage = () => {
+//   const { tasks = [], refreshTask } = useOutletContext(); // ✅ FIXED
+//   const [sortBy, setSortBy] = useState("newest");
+
+//   const sortedCompletedTasks = useMemo(() => {
+//     return tasks
+//       .filter((task) => task.completed === true) // ✅ FIXED
+//       .sort((a, b) => {
+//         switch (sortBy) {
+//           case "newest":
+//             return new Date(b.createdAt) - new Date(a.createdAt);
+
+//           case "oldest":
+//             return new Date(a.createdAt) - new Date(b.createdAt);
+
+//           case "priority": {
+//             const order = { High: 3, Medium: 2, Low: 1 };
+//             return (order[b.priority] || 0) - (order[a.priority] || 0);
+//           }
+
+//           default:
+//             return 0;
+//         }
+//       });
+//   }, [tasks, sortBy]);
+
+//   return (
+//     <div className={CT_CLASSES.page}>
+//       <div className={CT_CLASSES.header}>
+//         <div className={CT_CLASSES.titleWrapper}>
+//           <h1 className={CT_CLASSES.title}>
+//             <CheckCircle2 className="text-purple-500 w-5 h-5 md:w-6 md:h-6" />
+//             Completed Tasks
+//           </h1>
+
+//           <p className={CT_CLASSES.subtitle}>
+//             {sortedCompletedTasks.length} tasks completed
+//           </p>
+//         </div>
+
+//         <div className={CT_CLASSES.sortContainer}>
+//           <div className={CT_CLASSES.sortBox}>
+//             <div className={CT_CLASSES.filterLabel}>
+//               <Filter className="w-4 h-4 text-purple-500" />
+//               Sort By:
+//             </div>
+
+//             <select
+//               value={sortBy}
+//               onChange={(e) => setSortBy(e.target.value)}
+//               className={CT_CLASSES.select}
+//             >
+//               {SORT_OPTIONS.map((opt) => (
+//                 <option key={opt.id} value={opt.id}>
+//                   {opt.label}
+//                 </option>
+//               ))}
+//             </select>
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* TASK LIST */}
+//       <div className={CT_CLASSES.list}>
+//         {sortedCompletedTasks.length === 0 ? (
+//           <div className={CT_CLASSES.emptyState}>
+//             <CheckCircle2 className="w-8 h-8 text-purple-500" />
+//             <h3>No completed tasks yet!</h3>
+//             <p>Complete some tasks and they will appear here</p>
+//           </div>
+//         ) : (
+//           sortedCompletedTasks.map((task) => (
+//             <TaskItem
+//               key={task._id} // ✅ FIXED
+//               task={task}
+//               onRefresh={refreshTask} // ✅ FIXED
+//             />
+//           ))
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default CompletePage;
+
+
+
+
+
 import React, { useState, useMemo } from "react";
 import { CT_CLASSES, SORT_OPTIONS } from "../assets/dummy.jsx";
 import { CheckCircle2, Filter } from "lucide-react";
@@ -134,12 +230,12 @@ import { useOutletContext } from "react-router-dom";
 import TaskItem from "../components/TaskItem.jsx";
 
 const CompletePage = () => {
-  const { tasks = [], refreshTask } = useOutletContext(); // ✅ FIXED
+  const { tasks = [], refreshTasks } = useOutletContext(); // ✅ FIXED (consistent)
   const [sortBy, setSortBy] = useState("newest");
 
   const sortedCompletedTasks = useMemo(() => {
     return tasks
-      .filter((task) => task.completed === true) // ✅ FIXED
+      .filter((task) => task.completed === true)
       .sort((a, b) => {
         switch (sortBy) {
           case "newest":
@@ -149,8 +245,11 @@ const CompletePage = () => {
             return new Date(a.createdAt) - new Date(b.createdAt);
 
           case "priority": {
-            const order = { High: 3, Medium: 2, Low: 1 };
-            return (order[b.priority] || 0) - (order[a.priority] || 0);
+            const order = { high: 3, medium: 2, low: 1 }; // ✅ FIXED lowercase
+            return (
+              (order[b.priority?.toLowerCase()] || 0) -
+              (order[a.priority?.toLowerCase()] || 0)
+            );
           }
 
           default:
@@ -206,9 +305,9 @@ const CompletePage = () => {
         ) : (
           sortedCompletedTasks.map((task) => (
             <TaskItem
-              key={task._id} // ✅ FIXED
+              key={task._id || task.id} // ✅ safer
               task={task}
-              onRefresh={refreshTask} // ✅ FIXED
+              onRefresh={refreshTasks} // ✅ consistent
             />
           ))
         )}

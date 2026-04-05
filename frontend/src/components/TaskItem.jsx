@@ -257,6 +257,222 @@
 
 
 
+// import React, { useState, useEffect } from "react";
+// import {
+//   getPriorityBadgeColor,
+//   getPriorityColor,
+//   MENU_OPTIONS,
+//   TI_CLASSES,
+// } from "../assets/dummy.jsx";
+// import { Calendar, CheckCircle2, Clock, MoreVertical } from "lucide-react";
+// import axios from "axios";
+// import { format, isToday } from "date-fns";
+// import TaskModal from "./TaskModal.jsx";
+
+// const API_BASE = "https://protask-backend-7znq.onrender.com/api/tasks";
+
+// const TaskItem = ({
+//   task,
+//   onRefresh,
+//   onLogout,
+//   showCompleteCheckbox = true,
+// }) => {
+//   const [showMenu, setShowMenu] = useState(false);
+
+//   const [isCompleted, setIsCompleted] = useState(
+//     task.completed === true ||
+//       task.completed === 1 ||
+//       (typeof task.completed === "string" &&
+//         task.completed.toLowerCase() === "yes")
+//   );
+
+//   const [showEditModal, setShowEditModal] = useState(false);
+
+//   useEffect(() => {
+//     setIsCompleted(
+//       task.completed === true ||
+//         task.completed === 1 ||
+//         (typeof task.completed === "string" &&
+//           task.completed.toLowerCase() === "yes")
+//     );
+//   }, [task.completed]);
+
+//   const getAuthHeaders = () => {
+//     const token = localStorage.getItem("token");
+//     if (!token) throw new Error("No auth token found");
+//     return { Authorization: `Bearer ${token}` };
+//   };
+
+//   const borderColor = isCompleted
+//     ? "border-green-500"
+//     : getPriorityColor(task.priority).split(" ")[0];
+
+//   // ✅ FIXED: use boolean (true/false)
+//   const handleComplete = async () => {
+//     try {
+//       await axios.put(
+//         `${API_BASE}/${task._id}`,
+//         { completed: !isCompleted },
+//         { headers: getAuthHeaders() }
+//       );
+
+//       setIsCompleted(!isCompleted);
+//       onRefresh?.();
+//     } catch (err) {
+//       console.error(err);
+//       if (err.response?.status === 401) onLogout?.();
+//     }
+//   };
+
+//   const handleAction = (action) => {
+//     setShowMenu(false);
+
+//     if (action === "edit") setShowEditModal(true);
+//     if (action === "delete") handleDelete();
+//   };
+
+//   // ✅ FIXED DELETE
+//   const handleDelete = async () => {
+//     try {
+//       await axios.delete(`${API_BASE}/${task._id}`, {
+//         headers: getAuthHeaders(),
+//       });
+
+//       onRefresh?.();
+//     } catch (err) {
+//       console.error(err);
+//       if (err.response?.status === 401) onLogout?.();
+//     }
+//   };
+
+//   // ✅ FIXED UPDATE
+//   const handleSave = async (updatedTask) => {
+//     try {
+//       const { title, description, priority, dueDate, completed } = updatedTask;
+
+//       await axios.put(
+//         `${API_BASE}/${task._id}`,
+//         { title, description, priority, dueDate, completed },
+//         { headers: getAuthHeaders() }
+//       );
+
+//       setShowEditModal(false);
+//       onRefresh?.();
+//     } catch (err) {
+//       console.error(err);
+//       if (err.response?.status === 401) onLogout?.();
+//     }
+//   };
+
+//   return (
+//     <>
+//       <div className={`${TI_CLASSES.wrapper} ${borderColor}`}>
+//         <div className={TI_CLASSES.leftContainer}>
+//           {showCompleteCheckbox && (
+//             <button
+//               onClick={handleComplete}
+//               className={`${TI_CLASSES.completeBtn} ${
+//                 isCompleted ? "text-green-500" : "text-gray-300"
+//               }`}
+//             >
+//               <CheckCircle2
+//                 size={18}
+//                 className={`${TI_CLASSES.checkboxIconBase} ${
+//                   isCompleted ? "fill-green-500" : ""
+//                 }`}
+//               />
+//             </button>
+//           )}
+
+//           <div className="flex-1 min-w-0">
+//             <div className="flex items-baseline gap-2 flex-wrap">
+//               <h3
+//                 className={`${TI_CLASSES.titleBase} ${
+//                   isCompleted
+//                     ? "text-gray-400 line-through"
+//                     : "text-gray-800"
+//                 }`}
+//               >
+//                 {task.title}
+//               </h3>
+
+//               <span
+//                 className={`${TI_CLASSES.priorityBadge}${getPriorityBadgeColor(
+//                   task.priority
+//                 )}`}
+//               >
+//                 {task.priority}
+//               </span>
+//             </div>
+
+//             {task.description && (
+//               <p className={TI_CLASSES.description}>{task.description}</p>
+//             )}
+//           </div>
+
+//           <div className="relative">
+//             <button
+//               onClick={() => setShowMenu(!showMenu)}
+//               className={TI_CLASSES.menuBtnBase}
+//             >
+//               <MoreVertical className="w-4 h-4 sm:w-5 sm:h-5" />
+//             </button>
+
+//             {showMenu && (
+//               <div className={TI_CLASSES.menuDropdown}>
+//                 {MENU_OPTIONS.map((opt) => (
+//                   <button
+//                     key={opt.action}
+//                     onClick={() => handleAction(opt.action)}
+//                     className="w-full px-3 text-left text-sm hover:bg-blue-50 flex items-center gap-2"
+//                   >
+//                     {opt.icon}
+//                     {opt.label}
+//                   </button>
+//                 ))}
+//               </div>
+//             )}
+//           </div>
+
+//           <div>
+//             <div
+//               className={`${TI_CLASSES.dateRow} ${
+//                 task.dueDate && isToday(new Date(task.dueDate))
+//                   ? "text-blue-500"
+//                   : "text-gray-400"
+//               }`}
+//             >
+//               <Calendar className="w-3.5 h-3.5" />
+//               {task.dueDate
+//                 ? isToday(new Date(task.dueDate))
+//                   ? "Today"
+//                   : format(new Date(task.dueDate), "MMM dd")
+//                 : "-"}
+//             </div>
+
+//             <div className={TI_CLASSES.createdRow}>
+//               <Clock className="w-3 h-3" />
+//               {task.createdAt
+//                 ? `Created ${format(new Date(task.createdAt), "MMM dd")}`
+//                 : "No date"}
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+
+//       <TaskModal
+//         isOpen={showEditModal}
+//         onClose={() => setShowEditModal(false)}
+//         taskToEdit={task}
+//         onSave={handleSave}
+//       />
+//     </>
+//   );
+// };
+
+// export default TaskItem;
+
+
 import React, { useState, useEffect } from "react";
 import {
   getPriorityBadgeColor,
@@ -265,11 +481,9 @@ import {
   TI_CLASSES,
 } from "../assets/dummy.jsx";
 import { Calendar, CheckCircle2, Clock, MoreVertical } from "lucide-react";
-import axios from "axios";
 import { format, isToday } from "date-fns";
 import TaskModal from "./TaskModal.jsx";
-
-const API_BASE = "https://protask-0xfu.onrender.com/api/tasks";
+import API from "../utils/api"; // ✅ NEW
 
 const TaskItem = ({
   task,
@@ -279,42 +493,24 @@ const TaskItem = ({
 }) => {
   const [showMenu, setShowMenu] = useState(false);
 
-  const [isCompleted, setIsCompleted] = useState(
-    task.completed === true ||
-      task.completed === 1 ||
-      (typeof task.completed === "string" &&
-        task.completed.toLowerCase() === "yes")
-  );
+  const [isCompleted, setIsCompleted] = useState(!!task.completed);
 
   const [showEditModal, setShowEditModal] = useState(false);
 
   useEffect(() => {
-    setIsCompleted(
-      task.completed === true ||
-        task.completed === 1 ||
-        (typeof task.completed === "string" &&
-          task.completed.toLowerCase() === "yes")
-    );
+    setIsCompleted(!!task.completed);
   }, [task.completed]);
-
-  const getAuthHeaders = () => {
-    const token = localStorage.getItem("token");
-    if (!token) throw new Error("No auth token found");
-    return { Authorization: `Bearer ${token}` };
-  };
 
   const borderColor = isCompleted
     ? "border-green-500"
     : getPriorityColor(task.priority).split(" ")[0];
 
-  // ✅ FIXED: use boolean (true/false)
+  // ✅ COMPLETE TOGGLE
   const handleComplete = async () => {
     try {
-      await axios.put(
-        `${API_BASE}/${task._id}`,
-        { completed: !isCompleted },
-        { headers: getAuthHeaders() }
-      );
+      await API.put(`/api/tasks/${task._id}`, {
+        completed: !isCompleted,
+      });
 
       setIsCompleted(!isCompleted);
       onRefresh?.();
@@ -331,13 +527,10 @@ const TaskItem = ({
     if (action === "delete") handleDelete();
   };
 
-  // ✅ FIXED DELETE
+  // ✅ DELETE
   const handleDelete = async () => {
     try {
-      await axios.delete(`${API_BASE}/${task._id}`, {
-        headers: getAuthHeaders(),
-      });
-
+      await API.delete(`/api/tasks/${task._id}`);
       onRefresh?.();
     } catch (err) {
       console.error(err);
@@ -345,16 +538,18 @@ const TaskItem = ({
     }
   };
 
-  // ✅ FIXED UPDATE
+  // ✅ UPDATE
   const handleSave = async (updatedTask) => {
     try {
       const { title, description, priority, dueDate, completed } = updatedTask;
 
-      await axios.put(
-        `${API_BASE}/${task._id}`,
-        { title, description, priority, dueDate, completed },
-        { headers: getAuthHeaders() }
-      );
+      await API.put(`/api/tasks/${task._id}`, {
+        title,
+        description,
+        priority,
+        dueDate,
+        completed,
+      });
 
       setShowEditModal(false);
       onRefresh?.();

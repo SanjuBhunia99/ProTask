@@ -1,29 +1,29 @@
-import React, { useCallback, useEffect, useState, useMemo } from "react";
-import Navbar from "./Navbar";
-import Sidebar from "./Sidebar";
-import { useNavigate, Outlet } from "react-router-dom";
-import axios from "axios";
-import { Circle, Clock, TrendingUp, Zap } from "lucide-react";
+// import React, { useCallback, useEffect, useState, useMemo } from "react";
+// import Navbar from "./Navbar";
+// import Sidebar from "./Sidebar";
+// import { useNavigate, Outlet } from "react-router-dom";
+// import axios from "axios";
+// import { Circle, Clock, TrendingUp, Zap } from "lucide-react";
 
-const API_BASE = "https://protask-0xfu.onrender.com/api/tasks";
+// const API_BASE = "https://protask-backend-7znq.onrender.com/api/tasks";
 
-const Layout = ({ onLogout, user }) => {
-  const [tasks, setTasks] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const navigate = useNavigate();
+// const Layout = ({ onLogout, user }) => {
+//   const [tasks, setTasks] = useState([]);
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState(null);
+//   const navigate = useNavigate();
 
-   const fetchTasks = useCallback(async () => {
-    setLoading(true);
-    setError(null);
+//    const fetchTasks = useCallback(async () => {
+//     setLoading(true);
+//     setError(null);
 
-    try {
-      const token = localStorage.getItem("token");
+//     try {
+//       const token = localStorage.getItem("token");
 
-      if (!token) {
-        navigate("/login");
-        return;
-      }
+//       if (!token) {
+//         navigate("/login");
+//         return;
+//       }
 
 
 
@@ -233,26 +233,271 @@ const Layout = ({ onLogout, user }) => {
 
 // export default Layout;
 
-      const res = await axios.get(API_BASE, {
-        headers: { Authorization: `Bearer ${token}` },
-        timeout: 15000, 
-      });
+
+
+
+
+// import React, { useCallback, useEffect, useState, useMemo } from "react";
+// import Navbar from "./Navbar";
+// import Sidebar from "./Sidebar";
+// import { useNavigate, Outlet } from "react-router-dom";
+// import axios from "axios";
+// import { Circle, Clock, TrendingUp, Zap } from "lucide-react";
+
+// const API_BASE = "https://protask-backend-7znq.onrender.com/api/tasks";
+
+// const Layout = ({ onLogout, user }) => {
+//   const [tasks, setTasks] = useState([]);
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState(null);
+//   const navigate = useNavigate();
+
+//    const fetchTasks = useCallback(async () => {
+//     setLoading(true);
+//     setError(null);
+
+//     try {
+//       const token = localStorage.getItem("token");
+
+//       if (!token) {
+//         navigate("/login");
+//         return;
+//       }
+
+//       const res = await axios.get(API_BASE, {
+//         headers: { Authorization: `Bearer ${token}` },
+//         timeout: 15000, 
+//       });
+
+//       console.log("API RESPONSE:", res.data);
+
+    
+//       const tasksArray = res.data?.tasks || [];
+//       setTasks(tasksArray);
+//     } catch (err) {
+//       console.error("FETCH ERROR:", err);
+
+     
+//       if (err.code === "ECONNABORTED") {
+//         setError("⏳ Server is waking up... please wait and retry.");
+//       } else if (err.response?.status === 401) {
+//         onLogout?.();
+//       } else if (err.response?.status === 404) {
+//         setError(" API not found (Check backend URL)");
+//       } else {
+//         setError(err.response?.data?.message || "Failed to load tasks");
+//       }
+//     } finally {
+//       setLoading(false);
+//     }
+//   }, [navigate, onLogout]);
+
+//   useEffect(() => {
+//     fetchTasks();
+//   }, [fetchTasks]);
+
+ 
+//   const stats = useMemo(() => {
+//     const completedTasks = tasks.filter((t) => t.completed === true).length;
+
+//     const totalCount = tasks.length;
+//     const pendingCount = totalCount - completedTasks;
+//     const completionPercentage = totalCount
+//       ? Math.round((completedTasks / totalCount) * 100)
+//       : 0;
+
+//     return {
+//       totalCount,
+//       completedTasks,
+//       pendingCount,
+//       completionPercentage,
+//     };
+//   }, [tasks]);
+
+
+//   const StatCard = ({ title, value, icon }) => (
+//     <div className="p-3 rounded-xl bg-white shadow border hover:shadow-md transition">
+//       <div className="flex items-center gap-2">
+//         <div className="p-2 bg-blue-100 rounded">{icon}</div>
+//         <div>
+//           <p className="text-xl font-bold">{value}</p>
+//           <p className="text-xs text-gray-500">{title}</p>
+//         </div>
+//       </div>
+//     </div>
+//   );
+
+
+//   if (loading) {
+//     return (
+//       <div className="min-h-screen flex justify-center items-center">
+//         <div className="animate-spin h-10 w-10 border-4 border-blue-500 border-t-transparent rounded-full" />
+//       </div>
+//     );
+//   }
+
+  
+//   if (error) {
+//     return (
+//       <div className="min-h-screen flex justify-center items-center px-4">
+//         <div className="bg-red-100 p-6 rounded-xl text-center max-w-md">
+//           <p className="text-red-600 font-medium">{error}</p>
+
+//           <button
+//             onClick={fetchTasks}
+//             className="mt-4 px-4 py-2 bg-red-200 hover:bg-red-300 rounded-lg transition"
+//           >
+//             Retry
+//           </button>
+//         </div>
+//       </div>
+//     );
+//   }
+
+ 
+//   return (
+//     <div className="min-h-screen bg-gray-50">
+//       <Navbar user={user} onLogout={onLogout} />
+//       <Sidebar user={user} tasks={tasks} />
+
+//       <div className="ml-0 md:ml-16 xl:ml-64 pt-16 p-4">
+//         <div className="grid xl:grid-cols-3 gap-6">
+       
+//           <div className="xl:col-span-2">
+//             <Outlet context={{ tasks, refreshTasks: fetchTasks }} />
+//           </div>
+
+         
+//           <div className="space-y-6">
+            
+//             <div className="bg-white p-4 rounded shadow">
+//               <h3 className="font-semibold mb-4 flex items-center gap-2">
+//                 <TrendingUp className="text-blue-500" />
+//                 Task Stats
+//               </h3>
+
+//               <div className="grid grid-cols-2 gap-3">
+//                 <StatCard
+//                   title="Total"
+//                   value={stats.totalCount}
+//                   icon={<Circle />}
+//                 />
+//                 <StatCard
+//                   title="Completed"
+//                   value={stats.completedTasks}
+//                   icon={<Circle />}
+//                 />
+//                 <StatCard
+//                   title="Pending"
+//                   value={stats.pendingCount}
+//                   icon={<Circle />}
+//                 />
+//                 <StatCard
+//                   title="Progress"
+//                   value={`${stats.completionPercentage}%`}
+//                   icon={<Zap />}
+//                 />
+//               </div>
+
+//               <div className="mt-4">
+//                 <div className="flex justify-between text-sm">
+//                   <span>Progress</span>
+//                   <span>
+//                     {stats.completedTasks}/{stats.totalCount}
+//                   </span>
+//                 </div>
+
+//                 <div className="h-2 bg-gray-200 rounded mt-1">
+//                   <div
+//                     className="h-2 bg-blue-500 rounded"
+//                     style={{ width: `${stats.completionPercentage}%` }}
+//                   />
+//                 </div>
+//               </div>
+//             </div>
+
+            
+//             <div className="bg-white p-4 rounded shadow">
+//               <h3 className="font-semibold mb-4 flex items-center gap-2">
+//                 <Clock className="text-blue-500" />
+//                 Recent Tasks
+//               </h3>
+
+//               {tasks.slice(0, 3).map((task) => (
+//                 <div key={task._id} className="flex justify-between mb-2">
+//                   <span className="truncate">{task.title}</span>
+//                   <span
+//                     className={
+//                       task.completed ? "text-green-600" : "text-blue-600"
+//                     }
+//                   >
+//                     {task.completed ? "Done" : "Pending"}
+//                   </span>
+//                 </div>
+//               ))}
+
+//               {tasks.length === 0 && (
+//                 <p className="text-gray-500 text-sm">No tasks yet</p>
+//               )}
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default Layout;
+
+
+
+
+
+
+
+
+
+import React, { useCallback, useEffect, useState, useMemo } from "react";
+import Navbar from "./Navbar";
+import Sidebar from "./Sidebar";
+import { useNavigate, Outlet } from "react-router-dom";
+import API from "../utils/api"; // ✅ NEW
+import { Circle, Clock, TrendingUp, Zap } from "lucide-react";
+
+const Layout = ({ onLogout, user }) => {
+  const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
+  const fetchTasks = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        navigate("/login");
+        return;
+      }
+
+      // ✅ API call (auto token attach)
+      const res = await API.get("/api/tasks");
 
       console.log("API RESPONSE:", res.data);
 
-    
       const tasksArray = res.data?.tasks || [];
       setTasks(tasksArray);
     } catch (err) {
       console.error("FETCH ERROR:", err);
 
-     
       if (err.code === "ECONNABORTED") {
         setError("⏳ Server is waking up... please wait and retry.");
       } else if (err.response?.status === 401) {
         onLogout?.();
       } else if (err.response?.status === 404) {
-        setError(" API not found (Check backend URL)");
+        setError("API not found (Check backend URL)");
       } else {
         setError(err.response?.data?.message || "Failed to load tasks");
       }
@@ -265,7 +510,6 @@ const Layout = ({ onLogout, user }) => {
     fetchTasks();
   }, [fetchTasks]);
 
- 
   const stats = useMemo(() => {
     const completedTasks = tasks.filter((t) => t.completed === true).length;
 
@@ -283,7 +527,6 @@ const Layout = ({ onLogout, user }) => {
     };
   }, [tasks]);
 
-
   const StatCard = ({ title, value, icon }) => (
     <div className="p-3 rounded-xl bg-white shadow border hover:shadow-md transition">
       <div className="flex items-center gap-2">
@@ -296,7 +539,6 @@ const Layout = ({ onLogout, user }) => {
     </div>
   );
 
-
   if (loading) {
     return (
       <div className="min-h-screen flex justify-center items-center">
@@ -305,7 +547,6 @@ const Layout = ({ onLogout, user }) => {
     );
   }
 
-  
   if (error) {
     return (
       <div className="min-h-screen flex justify-center items-center px-4">
@@ -314,7 +555,7 @@ const Layout = ({ onLogout, user }) => {
 
           <button
             onClick={fetchTasks}
-            className="mt-4 px-4 py-2 bg-red-200 hover:bg-red-300 rounded-lg transition"
+            className="mt-4 px-4 py-2 bg-red-200 hover:bg-red-300 rounded-lg"
           >
             Retry
           </button>
@@ -323,7 +564,6 @@ const Layout = ({ onLogout, user }) => {
     );
   }
 
- 
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar user={user} onLogout={onLogout} />
@@ -331,14 +571,11 @@ const Layout = ({ onLogout, user }) => {
 
       <div className="ml-0 md:ml-16 xl:ml-64 pt-16 p-4">
         <div className="grid xl:grid-cols-3 gap-6">
-       
           <div className="xl:col-span-2">
             <Outlet context={{ tasks, refreshTasks: fetchTasks }} />
           </div>
 
-         
           <div className="space-y-6">
-            
             <div className="bg-white p-4 rounded shadow">
               <h3 className="font-semibold mb-4 flex items-center gap-2">
                 <TrendingUp className="text-blue-500" />
@@ -346,26 +583,10 @@ const Layout = ({ onLogout, user }) => {
               </h3>
 
               <div className="grid grid-cols-2 gap-3">
-                <StatCard
-                  title="Total"
-                  value={stats.totalCount}
-                  icon={<Circle />}
-                />
-                <StatCard
-                  title="Completed"
-                  value={stats.completedTasks}
-                  icon={<Circle />}
-                />
-                <StatCard
-                  title="Pending"
-                  value={stats.pendingCount}
-                  icon={<Circle />}
-                />
-                <StatCard
-                  title="Progress"
-                  value={`${stats.completionPercentage}%`}
-                  icon={<Zap />}
-                />
+                <StatCard title="Total" value={stats.totalCount} icon={<Circle />} />
+                <StatCard title="Completed" value={stats.completedTasks} icon={<Circle />} />
+                <StatCard title="Pending" value={stats.pendingCount} icon={<Circle />} />
+                <StatCard title="Progress" value={`${stats.completionPercentage}%`} icon={<Zap />} />
               </div>
 
               <div className="mt-4">
@@ -385,7 +606,6 @@ const Layout = ({ onLogout, user }) => {
               </div>
             </div>
 
-            
             <div className="bg-white p-4 rounded shadow">
               <h3 className="font-semibold mb-4 flex items-center gap-2">
                 <Clock className="text-blue-500" />
@@ -393,7 +613,7 @@ const Layout = ({ onLogout, user }) => {
               </h3>
 
               {tasks.slice(0, 3).map((task) => (
-                <div key={task._id} className="flex justify-between mb-2">
+                <div key={task._id || task.id} className="flex justify-between mb-2">
                   <span className="truncate">{task.title}</span>
                   <span
                     className={
