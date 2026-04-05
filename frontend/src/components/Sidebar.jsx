@@ -1,3 +1,71 @@
+import React, { useState, useEffect } from "react";
+import {
+  LINK_CLASSES,
+  menuItems,
+  PRODUCTIVITY_CARD,
+  SIDEBAR_CLASSES,
+} from "../assets/dummy.jsx";
+import { NavLink } from "react-router-dom";
+import { Menu, Sparkles, X } from "lucide-react";
+
+const Sidebar = ({ user, tasks }) => {
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const totalTasks = tasks?.length || 0;
+
+
+  const completedTasks =
+    tasks?.filter(
+      (t) =>
+        t.completed === true ||
+        t.completed === 1 ||
+        (typeof t.completed === "string" &&
+          t.completed.toLowerCase() === "yes")
+    ).length || 0;
+
+  const productivity =
+    totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+
+  const username = user?.name || "User";
+  const initial = username.charAt(0).toUpperCase();
+
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? "hidden" : "auto";
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [mobileOpen]);
+
+  const renderMenuItems = (isMobile = false) => (
+    <ul className="space-y-2">
+      {menuItems.map(({ text, path, icon }) => (
+        <li key={text}>
+          <NavLink
+            to={path}
+            className={({ isActive }) =>
+              [
+                LINK_CLASSES.base,
+                isActive ? LINK_CLASSES.active : LINK_CLASSES.inactive,
+                isMobile ? "justify-start" : "lg:justify-start",
+              ].join(" ")
+            }
+            onClick={() => setMobileOpen(false)}
+          >
+            <span className={LINK_CLASSES.icon}>{icon}</span>
+            <span
+              className={`${isMobile ? "block" : "hidden lg:block"} ${
+                LINK_CLASSES.text
+              }`}
+            >
+              {text}
+            </span>
+          </NavLink>
+        </li>
+      ))}
+    </ul>
+  );
+
+
 // import React, { useState, useEffect } from "react";
 // import {
 //   LINK_CLASSES,
@@ -52,198 +120,6 @@
 //     </ul>
 //   );
 
-//   return (
-//     <>
-//       <div className={SIDEBAR_CLASSES.desktop}>
-//         <div className="p-5 border-blue-100 hidden lg:block">
-//           <div className="flex items-center gap-3">
-//             <div className="w-10 h-10 rounded-full bg-linear-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white font-bold shadow-md">
-//               {initial}
-//             </div>
-//             <div>
-//               <h2 className="text-lg font-bold text-gray-800">
-//                 Hey, {username}
-//               </h2>
-//               <p className="text-sm text-blue-500 font-medium">
-//                 Let's crush some tasks!
-//               </p>
-//             </div>
-//           </div>
-
-//           <div className="p-4 space-y-6 overflow-y-auto flex-1">
-//             <div className={PRODUCTIVITY_CARD.container}>
-//               <div className={PRODUCTIVITY_CARD.header}>
-//                 <h3 className={PRODUCTIVITY_CARD.label}>PRODUCTIVITY</h3>
-//                 <span className={PRODUCTIVITY_CARD.badge}>
-//                   {productivity}%
-//                 </span>
-//               </div>
-
-//               <div className={PRODUCTIVITY_CARD.barBg}>
-//                 <div
-//                   className={PRODUCTIVITY_CARD.barFg}
-//                   style={{ width: `${productivity}%` }}
-//                 />
-//               </div>
-//             </div>
-//           </div>
-
-//           {renderMenuItems()}
-
-//           {/* <div className="mt-auto pt-6 lg:block hidden"> */}
-//             {/* <div className={TIP_CARD.container}> */}
-//               {/* <div className="flex items-center gap-2"> */}
-//                 {/* <div className={TIP_CARD.iconWrapper}>
-//                   <Lightbulb className="w-4 h-4 text-yellow-500" />
-//                 </div> */}
-//                 {/* <div>
-//                   <h3 className={TIP_CARD.title}>Pro Tip</h3>
-//                   <p className={TIP_CARD.text}>
-//                     Use keyboard shortcuts to boost productivity
-//                   </p>
-//                   <a
-//                     href="https://hexgondigitalservices.com"
-//                     target="_blank"
-//                     rel="noopener noreferrer"
-//                     className="block mt-2 text-blue-500 hover:underline"
-//                   >
-//                     Visit Hexagon Digital Services
-//                   </a>
-//                 </div> */}
-//               {/* </div> */}
-//             {/* </div> */}
-//           {/* </div> */}
-//         </div>
-//       </div>
-
-//       {!mobileOpen && (
-//         <button
-//           onClick={() => setMobileOpen(true)}
-//           className={SIDEBAR_CLASSES.mobileButton}
-//         >
-//           <Menu className="w-5 h-5" />
-//         </button>
-//       )}
-
-//       {mobileOpen && (
-//         <div className="fixed inset-0 z-40">
-//           <div
-//             className={SIDEBAR_CLASSES.mobileDrawerBackdrop}
-//             onClick={() => setMobileOpen(false)}
-//           />
-
-//           <div
-//             className={SIDEBAR_CLASSES.mobileDrawer}
-//             onClick={(e) => e.stopPropagation()}
-//           >
-//             <div className="flex justify-between items-center mb-4 border-b pb-2">
-//               <h2 className="text-lg font-bold text-blue-600">
-//                 Menu
-//               </h2>
-//               <button
-//                 onClick={() => setMobileOpen(false)}
-//                 className="text-gray-700 hover:text-blue-600"
-//               >
-//                 <X className="w-5 h-5" />
-//               </button>
-//             </div>
-
-//             <div className="flex items-center gap-3 mb-6">
-//               <div className="w-10 h-10 rounded-full bg-linear-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white font-bold shadow-md">
-//                 {initial}
-//               </div>
-//               <div>
-//                 <h2 className="text-lg font-bold text-gray-800">
-//                   Hey, {username}
-//                 </h2>
-//                 <p className="text-sm text-blue-500 font-medium flex items-center gap-1">
-//                   <Sparkles className="w-3 h-3" />
-//                   Let's crush some tasks!
-//                 </p>
-//               </div>
-//             </div>
-
-//             {renderMenuItems(true)}
-//           </div>
-//         </div>
-//       )}
-//     </>
-//   );
-// };
-// export default Sidebar;
-
-
-
-
-
-
-import React, { useState, useEffect } from "react";
-import {
-  LINK_CLASSES,
-  menuItems,
-  PRODUCTIVITY_CARD,
-  SIDEBAR_CLASSES,
-} from "../assets/dummy.jsx";
-import { NavLink } from "react-router-dom";
-import { Menu, Sparkles, X } from "lucide-react";
-
-const Sidebar = ({ user, tasks }) => {
-  const [mobileOpen, setMobileOpen] = useState(false);
-
-  const totalTasks = tasks?.length || 0;
-
-  // ✅ FIXED: handle all completed formats
-  const completedTasks =
-    tasks?.filter(
-      (t) =>
-        t.completed === true ||
-        t.completed === 1 ||
-        (typeof t.completed === "string" &&
-          t.completed.toLowerCase() === "yes")
-    ).length || 0;
-
-  const productivity =
-    totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
-
-  const username = user?.name || "User";
-  const initial = username.charAt(0).toUpperCase();
-
-  useEffect(() => {
-    document.body.style.overflow = mobileOpen ? "hidden" : "auto";
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [mobileOpen]);
-
-  const renderMenuItems = (isMobile = false) => (
-    <ul className="space-y-2">
-      {menuItems.map(({ text, path, icon }) => (
-        <li key={text}>
-          <NavLink
-            to={path}
-            className={({ isActive }) =>
-              [
-                LINK_CLASSES.base,
-                isActive ? LINK_CLASSES.active : LINK_CLASSES.inactive,
-                isMobile ? "justify-start" : "lg:justify-start",
-              ].join(" ")
-            }
-            onClick={() => setMobileOpen(false)}
-          >
-            <span className={LINK_CLASSES.icon}>{icon}</span>
-            <span
-              className={`${isMobile ? "block" : "hidden lg:block"} ${
-                LINK_CLASSES.text
-              }`}
-            >
-              {text}
-            </span>
-          </NavLink>
-        </li>
-      ))}
-    </ul>
-  );
-
   return (
     <>
       <div className={SIDEBAR_CLASSES.desktop}>
@@ -281,6 +157,8 @@ const Sidebar = ({ user, tasks }) => {
           </div>
 
           {renderMenuItems()}
+
+      
         </div>
       </div>
 
@@ -305,7 +183,9 @@ const Sidebar = ({ user, tasks }) => {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-between items-center mb-4 border-b pb-2">
-              <h2 className="text-lg font-bold text-blue-600">Menu</h2>
+              <h2 className="text-lg font-bold text-blue-600">
+                Menu
+              </h2>
               <button
                 onClick={() => setMobileOpen(false)}
                 className="text-gray-700 hover:text-blue-600"
@@ -336,5 +216,105 @@ const Sidebar = ({ user, tasks }) => {
     </>
   );
 };
-
 export default Sidebar;
+
+
+
+
+
+
+
+//   return (
+//     <>
+//       <div className={SIDEBAR_CLASSES.desktop}>
+//         <div className="p-5 border-blue-100 hidden lg:block">
+//           <div className="flex items-center gap-3">
+//             <div className="w-10 h-10 rounded-full bg-linear-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white font-bold shadow-md">
+//               {initial}
+//             </div>
+//             <div>
+//               <h2 className="text-lg font-bold text-gray-800">
+//                 Hey, {username}
+//               </h2>
+//               <p className="text-sm text-blue-500 font-medium">
+//                 Let's crush some tasks!
+//               </p>
+//             </div>
+//           </div>
+
+//           <div className="p-4 space-y-6 overflow-y-auto flex-1">
+//             <div className={PRODUCTIVITY_CARD.container}>
+//               <div className={PRODUCTIVITY_CARD.header}>
+//                 <h3 className={PRODUCTIVITY_CARD.label}>PRODUCTIVITY</h3>
+//                 <span className={PRODUCTIVITY_CARD.badge}>
+//                   {productivity}%
+//                 </span>
+//               </div>
+
+//               <div className={PRODUCTIVITY_CARD.barBg}>
+//                 <div
+//                   className={PRODUCTIVITY_CARD.barFg}
+//                   style={{ width: `${productivity}%` }}
+//                 />
+//               </div>
+//             </div>
+//           </div>
+
+//           {renderMenuItems()}
+//         </div>
+//       </div>
+
+//       {!mobileOpen && (
+//         <button
+//           onClick={() => setMobileOpen(true)}
+//           className={SIDEBAR_CLASSES.mobileButton}
+//         >
+//           <Menu className="w-5 h-5" />
+//         </button>
+//       )}
+
+//       {mobileOpen && (
+//         <div className="fixed inset-0 z-40">
+//           <div
+//             className={SIDEBAR_CLASSES.mobileDrawerBackdrop}
+//             onClick={() => setMobileOpen(false)}
+//           />
+
+//           <div
+//             className={SIDEBAR_CLASSES.mobileDrawer}
+//             onClick={(e) => e.stopPropagation()}
+//           >
+//             <div className="flex justify-between items-center mb-4 border-b pb-2">
+//               <h2 className="text-lg font-bold text-blue-600">Menu</h2>
+//               <button
+//                 onClick={() => setMobileOpen(false)}
+//                 className="text-gray-700 hover:text-blue-600"
+//               >
+//                 <X className="w-5 h-5" />
+//               </button>
+//             </div>
+
+//             <div className="flex items-center gap-3 mb-6">
+//               <div className="w-10 h-10 rounded-full bg-linear-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white font-bold shadow-md">
+//                 {initial}
+//               </div>
+//               <div>
+//                 <h2 className="text-lg font-bold text-gray-800">
+//                   Hey, {username}
+//                 </h2>
+//                 <p className="text-sm text-blue-500 font-medium flex items-center gap-1">
+//                   <Sparkles className="w-3 h-3" />
+//                   Let's crush some tasks!
+//                 </p>
+//               </div>
+//             </div>
+
+//             {renderMenuItems(true)}
+//           </div>
+//         </div>
+//       )}
+//     </>
+//   );
+// };
+
+// export default Sidebar;
