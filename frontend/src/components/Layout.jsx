@@ -1,30 +1,32 @@
-// import React, { useCallback, useEffect, useState, useMemo } from "react";
-// import Navbar from "./Navbar";
-// import Sidebar from "./Sidebar";
-// import { useNavigate, Outlet } from "react-router-dom";
-// import axios from "axios";
-// import { Circle, Clock, TrendingUp, Zap } from "lucide-react";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
+import Navbar from "./Navbar";
+import Sidebar from "./Sidebar";
+import { useNavigate, Outlet } from "react-router-dom";
+import axios from "axios";
+import { Circle, Clock, TrendingUp, Zap } from "lucide-react";
 
-// const Layout = ({ onLogout, user }) => {
-//   const [tasks, setTasks] = useState([]);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState(null);
-//   const navigate = useNavigate();
+const API_BASE = "https://protask-0xfu.onrender.com/api/tasks";
 
-//   const fetchTasks = useCallback(async () => {
-//     setLoading(true);
-//     setError(null);
+const Layout = ({ onLogout, user }) => {
+  const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
-//     try {
-//       const token = localStorage.getItem("token");
-//       // if (!token) throw new Error("No auth token found");
-// if(!token){navigate('/signup')}
-//       const { data } = await axios.get(
-//         "https://protask-0xfu.onrender.com/api/tasks/gp",
-//         {
-//           headers: { Authorization: `Bearer ${token}` },
-//         },
-//       );
+   const fetchTasks = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        navigate("/login");
+        return;
+      }
+
+
+
 
 //       const arr = Array.isArray(data)
 //         ? data
@@ -230,34 +232,6 @@
 // };
 
 // export default Layout;
-
-import React, { useCallback, useEffect, useState, useMemo } from "react";
-import Navbar from "./Navbar";
-import Sidebar from "./Sidebar";
-import { useNavigate, Outlet } from "react-router-dom";
-import axios from "axios";
-import { Circle, Clock, TrendingUp, Zap } from "lucide-react";
-
-const API_BASE = "https://protask-0xfu.onrender.com/api/tasks";
-
-const Layout = ({ onLogout, user }) => {
-  const [tasks, setTasks] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const navigate = useNavigate();
-
-
-  const fetchTasks = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const token = localStorage.getItem("token");
-
-      if (!token) {
-        navigate("/login");
-        return;
-      }
 
       const res = await axios.get(API_BASE, {
         headers: { Authorization: `Bearer ${token}` },
