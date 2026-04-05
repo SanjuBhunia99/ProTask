@@ -458,8 +458,8 @@
 
 
 import React, { useCallback, useEffect, useState, useMemo } from "react";
-import Navbar from "./Navbar";
-import Sidebar from "./Sidebar";
+import Navbar from "./Navbar.jsx";
+import Sidebar from "./Sidebar.jsx";
 import { useNavigate, Outlet } from "react-router-dom";
 import API from "../utils/api"; // ✅ NEW
 import { Circle, Clock, TrendingUp, Zap } from "lucide-react";

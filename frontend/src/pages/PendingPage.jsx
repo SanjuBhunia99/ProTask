@@ -372,7 +372,8 @@ import { ListChecks, Filter, Plus, Clock } from "lucide-react";
 import { useOutletContext } from "react-router-dom";
 import TaskItem from "../components/TaskItem.jsx";
 import TaskModal from "../components/TaskModal.jsx";
-import API from "../utils/api"; // ✅ NEW
+// import API from "../utils/api.js"; // ✅ NEW
+import API from "../utils/api";
 
 const PendingPage = () => {
   const { tasks = [], refreshTasks } = useOutletContext();
