@@ -2,7 +2,7 @@
 
 🚀 **Overview**
 
-<h5>ProTask is a modern task and project management web application designed to help users efficiently organize, track, and manage their work. It provides a clean and intuitive interface to handle tasks, collaborate with team members, and monitor project progress.</h5>
+<p>ProTask is a modern task and project management web application designed to help users efficiently organize, track, and manage their work. It provides a clean and intuitive interface to handle tasks, collaborate with team members, and monitor project progress.</p>
 
 ## 🛠️ Tech Stack
 
